@@ -78,6 +78,7 @@ const main = async () => {
     console.log("Wallet balance before:", ethers.formatEther(await provider.getBalance(smartWallet)));
     console.log("Receiver balance before:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
     console.log("Paymaster balance before:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
+<<<<<<< HEAD
     console.log("Beneficiary balance before:", ethers.formatEther(await provider.getBalance(beneficiary)));
     
     const tx = await entryPoint.handleOps(ops, beneficiary);
@@ -87,6 +88,15 @@ const main = async () => {
     console.log("Receiver balance After:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
     console.log("Paymaster balance After:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
     console.log("Beneficiary balance After:", ethers.formatEther(await provider.getBalance(beneficiary)));
+=======
+
+    const tx = await entryPoint.handleOps(ops, beneficiary);
+    await tx.wait();
+
+    console.log("Wallet address After:", ethers.formatEther(await provider.getBalance(smartWallet)));
+    console.log("Receiver balance After:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
+    console.log("Paymaster balance After:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
+>>>>>>> b957d652c97e986537fcb77cf3cac33d7f91c12a
     console.log(tx);
 
 };
