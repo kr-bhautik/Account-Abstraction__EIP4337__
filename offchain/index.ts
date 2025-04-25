@@ -65,20 +65,20 @@ const main = async () => {
     console.log(userOpHash);
     console.log(userOp);
 
-    // const ops = [userOp];
-    // const beneficiary = "0x6ee7b2cFdDcA903A049Cc445E8ac1388E58f5220"
+    const ops = [userOp];
+    const beneficiary = "0x6ee7b2cFdDcA903A049Cc445E8ac1388E58f5220"
 
-    // console.log("Wallet balance before:", ethers.formatEther(await provider.getBalance(smartWallet)));
-    // console.log("Receiver balance before:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
-    // console.log("Paymaster balance before:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
+    console.log("Wallet balance before:", ethers.formatEther(await provider.getBalance(smartWallet)));
+    console.log("Receiver balance before:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
+    console.log("Paymaster balance before:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
 
-    // const tx = await entryPoint.handleOps(ops, beneficiary);
-    // await tx.wait();
+    const tx = await entryPoint.handleOps(ops, beneficiary);
+    await tx.wait();
 
-    // console.log("Wallet address After:", ethers.formatEther(await provider.getBalance(smartWallet)));
-    // console.log("Receiver balance After:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
-    // console.log("Paymaster balance After:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
-    // console.log(tx);
+    console.log("Wallet address After:", ethers.formatEther(await provider.getBalance(smartWallet)));
+    console.log("Receiver balance After:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
+    console.log("Paymaster balance After:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
+    console.log(tx);
 
 };
 
