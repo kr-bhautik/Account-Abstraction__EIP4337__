@@ -5,15 +5,25 @@ dotenv.config();
 import "hardhat-deploy"
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.28",
+  solidity: {
+    version: "0.8.28",
+    settings: {
+      evmVersion: "cancun",
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    }
+  },
   networks: {
     sepolia : {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: [process.env.DEPLOYER_KEY!],
       chainId: 11155111,
     },
+
   },
-  defaultNetwork: "sepolia",
+  // defaultNetwork: "sepolia",
   namedAccounts: {
     Deployer: {
       default: 0

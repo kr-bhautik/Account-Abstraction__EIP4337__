@@ -35,9 +35,9 @@ contract Paymaster is IPaymaster {
 
         // 1 means signature is invalid
         // 0 means signature is valid
-        // if( recoveredSigner != paymasterOwner) {
-        //     return ("", 1);
-        // }
+        if( recoveredSigner != paymasterOwner) {
+            return ("", 1);
+        }
         return ("", 0);
 
     }

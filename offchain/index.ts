@@ -1,5 +1,6 @@
-import { ethers, recoverAddress, hashMessage, toBeArray, getBytes, } from "ethers";
+import { ethers, recoverAddress, hashMessage, toBeArray, getBytes, hexlify, toBeHex} from "ethers";
 import ABI_EntryPoint from "./ABI_EntryPoint.json";
+import axios from 'axios'
 
 import env from "dotenv";
 env.config();
@@ -8,7 +9,7 @@ const main = async () => {
     const SEPOLIA_RPC = `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`;
     const PRIVATE_KEY = `0x${process.env.DEPLOYER_KEY}`;
     const PAYMASTER_PRIVATE_KEY = `0x${process.env.PAYMASTER_PRIVATE_KEY}`;
-    const paymasterAddress = `0x77fC40Be68f82A6bB83fd5Afd85bF38aD7153467`;
+    const paymasterAddress = `0x212a96F04d9fE1Fe6e861BA6AF8982d47A7e3Ff9`;
 
     const provider = new ethers.JsonRpcProvider(SEPOLIA_RPC);
     const owner = new ethers.Wallet(PRIVATE_KEY, provider);
@@ -43,6 +44,8 @@ const main = async () => {
         accountGasLimits,
         preVerificationGas: 50_000,
         gasFees,
+        paymasterVerificationGasLimit: 200_000n,
+        paymasterPostOpGasLimit: 100_000n,
         paymasterAndData: "0x",
         signature: "0x",
     };
@@ -55,30 +58,36 @@ const main = async () => {
     console.log("signature : ", signature);
     console.log("paymasterSignature : ", paymasterSignature);
     console.log(userOpHash)
-    const ethSignedHash = ethers.hashMessage(ethers.getBytes(userOpHash));
+    // const ethSignedHash = ethers.hashMessage(ethers.getBytes(userOpHash));
+    const encodedVerificationGas = ethers.zeroPadValue(toBeHex(100000n), 6);
+    const encodedPostOpGas = ethers.zeroPadValue(toBeHex(100000n), 6);
     userOp.paymasterAndData = ethers.concat([
         getBytes(paymasterAddress),
-        getBytes(paymasterSignature)
+        getBytes(paymasterSignature),
+        getBytes(encodedVerificationGas),
+        getBytes(encodedPostOpGas)
     ]);
-    console.log("Recovered address: ", recoverAddress(ethSignedHash, paymasterSignature));
+    // console.log("Recovered address: ", recoverAddress(ethSignedHash, paymasterSignature));
 
     console.log(userOpHash);
     console.log(userOp);
 
-    // const ops = [userOp];
-    // const beneficiary = "0x6ee7b2cFdDcA903A049Cc445E8ac1388E58f5220"
+    const ops = [userOp];
+    const beneficiary = "0x6ee7b2cFdDcA903A049Cc445E8ac1388E58f5220"
 
-    // console.log("Wallet balance before:", ethers.formatEther(await provider.getBalance(smartWallet)));
-    // console.log("Receiver balance before:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
-    // console.log("Paymaster balance before:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
-
-    // const tx = await entryPoint.handleOps(ops, beneficiary);
-    // await tx.wait();
-
-    // console.log("Wallet address After:", ethers.formatEther(await provider.getBalance(smartWallet)));
-    // console.log("Receiver balance After:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
-    // console.log("Paymaster balance After:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
-    // console.log(tx);
+    console.log("Wallet balance before:", ethers.formatEther(await provider.getBalance(smartWallet)));
+    console.log("Receiver balance before:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
+    console.log("Paymaster balance before:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
+    console.log("Beneficiary balance before:", ethers.formatEther(await provider.getBalance(beneficiary)));
+    
+    const tx = await entryPoint.handleOps(ops, beneficiary);
+    await tx.wait();
+    
+    console.log("Wallet address After:", ethers.formatEther(await provider.getBalance(smartWallet)));
+    console.log("Receiver balance After:", ethers.formatEther(await provider.getBalance('0xBBE60f2076BfcCd5DC66E94495290A2042De2186')));
+    console.log("Paymaster balance After:", ethers.formatEther(await provider.getBalance(paymasterAddress)));
+    console.log("Beneficiary balance After:", ethers.formatEther(await provider.getBalance(beneficiary)));
+    console.log(tx);
 
 };
 
